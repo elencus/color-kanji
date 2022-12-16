@@ -10,8 +10,6 @@ import time
 import requests
 import regex as re
 
-STOP_WORDS = r"一啲|一定|不如|不過|之後|乜|乜嘢|人哋|但係|你|你哋|佢|佢哋|係|個|其他|冇|再|到|即|即係|原來|去|又|可以|可能|同|同埋|吖|呀|呢|咁|咗|咩|咪|哦|哩|哩個|哩啲|哩度|哩樣|唔|唔使|唔係|啊|啲|喎|喺|喺度|嗯|嗰|嗰個|嗰啲|嗰度|嘅|嘢|噉|噉樣|因為|多|太|好|如果|就|已經|幾|幾多|得|想|應該|成日|我|我哋|或者|所以|最|會|有|有冇|有啲|未|梗係|然之後|由|真係|睇|知|而|而家|自己|要|覺得|話|諗|講|譬如|跟住|返|過|邊個|都|點|點樣|點解|"
-
 # Cleans a string of cantonese text to only include Canonical Chinese characters.
 def clean_data(content: str) -> str:
     """
@@ -20,7 +18,18 @@ def clean_data(content: str) -> str:
     Also removes the strings "光復香港", "時代革命" "五大訴求" "缺一不可" from the text.
     This ensures that the colors of the squares are not too similar.
     """
-    regexes = [r"[^\p{Han}]", r"光復|香港|時代|革命|五大訴求|訴求|缺一不可", STOP_WORDS]
+    stop_words = re.compile(
+        "一啲|一定|不如|不過|之後|乜|乜嘢|人哋|但係|"
+        "你|你哋|佢|佢哋|係|個|其他|冇|再|到|即|即係|"
+        "原來|去|又|可以|可能|同|同埋|吖|呀|呢|咁|咗|"
+        "咩|咪|哦|哩|哩個|哩啲|哩度|哩樣|唔|唔使|唔係|"
+        "啊|啲|喎|喺|喺度|嗯|嗰|嗰個|嗰啲|嗰度|嘅|嘢|"
+        "噉|噉樣|因為|多|太|好|如果|就|已經|幾|幾多|得|"
+        "想|應該|成日|我|我哋|或者|所以|最|會|有|有冇|"
+        "有啲|未|梗係|然之後|由|真係|睇|知|而|而家|自己|"
+        "要|覺得|話|諗|講|譬如|跟住|返|過|邊個|都|點|點樣|點解|"
+    )
+    regexes = [r"[^\p{Han}]", r"光復|香港|時代|革命|五大訴求|訴求|缺一不可", stop_words]
     # Clean the data using all the regexes:
     for regex in regexes:
         content = re.sub(regex, "", content)
@@ -80,7 +89,7 @@ def get_random_wikipedia_articles(rnlimit: int = 25, json_file: str = "canto_wik
 
 
 # function to join together the data from the json files
-def join_json_files():
+def join_json_files() -> int:
     """
     This function joins together the data from the json files.
     """
@@ -94,7 +103,8 @@ def join_json_files():
             "canto_wiki"
         )  # only include files that start with canto_wiki
     ]
-    # check if corpus.json already exists in os.listdir. If it does, extract the data and save it as a list named extracts.
+    # check if corpus.json already exists in os.listdir.
+    # If it does, extract the data and save it as a list named extracts.
     if "corpus.json" in os.listdir():
         with open("corpus.json", "r", encoding="utf-8") as file:
             extracts = json.load(file)

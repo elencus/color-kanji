@@ -3,4 +3,4 @@ dist/
 *.env
 *.venv
 *.csv
-canto_wiki.txt
+*.json

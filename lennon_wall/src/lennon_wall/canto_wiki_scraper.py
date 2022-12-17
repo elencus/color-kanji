@@ -3,7 +3,6 @@ This module scrapes random articles from the Cantonese Wikipedia,
 and saves the summaries of the articles into a json.
 """
 import json
-import math
 import os
 import random
 import threading

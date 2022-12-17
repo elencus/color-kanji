@@ -3,6 +3,7 @@ This module scrapes random articles from the Cantonese Wikipedia,
 and saves the summaries of the articles into a json.
 """
 import json
+import math
 import os
 import random
 import threading
@@ -36,7 +37,7 @@ def clean_data(content: str) -> str:
     return content
 
 
-def get_random_wikipedia_articles(rnlimit: int = 25, json_file: str = "canto_wiki"):
+def get_random_wikipedia_articles(rnlimit: int = 100, json_file: str = "canto_wiki"):
     """
     This function gets rnlimit random articles from wikipedia,
     and saves the summaries of the articles into a json.
@@ -89,7 +90,7 @@ def get_random_wikipedia_articles(rnlimit: int = 25, json_file: str = "canto_wik
 
 
 # function to join together the data from the json files
-def join_json_files() -> int:
+def join_json_files(corpus_json: str = "corpus.json") -> int:
     """
     This function joins together the data from the json files.
     """
@@ -105,8 +106,8 @@ def join_json_files() -> int:
     ]
     # check if corpus.json already exists in os.listdir.
     # If it does, extract the data and save it as a list named extracts.
-    if "corpus.json" in os.listdir():
-        with open("corpus.json", "r", encoding="utf-8") as file:
+    if corpus_json in os.listdir():
+        with open(corpus_json, "r", encoding="utf-8") as file:
             extracts = json.load(file)
     else:
         # make a list to store the extracts in. Don't include a title for the columns.
@@ -129,7 +130,7 @@ def join_json_files() -> int:
         if re.match(r"canto_wiki\d+.json", file):
             os.remove(file)
     # save the new data to the json file
-    with open("corpus.json", "w", encoding="utf-8") as file:
+    with open(corpus_json, "w", encoding="utf-8") as file:
         json.dump(
             extracts,
             file,
@@ -148,10 +149,10 @@ def main():
     duplicate_percent = 0
     iterations = 0
     # iterate thru as long as less than 30% of results are duplicates
-    while duplicate_percent < 30:
+    while duplicate_percent < 80:
         iterations += 1
         # use threading to run the function in parallel
-        threading.Thread(target=get_random_wikipedia_articles).start()
+        threading.Thread(target=get_random_wikipedia_articles, args=(1000,)).start()
         # log the number of threads currently running
         time.sleep(0.2)
         # Check if there are any valid json files in os.listdir
@@ -161,11 +162,13 @@ def main():
             current_duplicate_percent = join_json_files()
             # Adjust the duplicate percent so that it reflects
             # the average duplicate percent across all iterations
-            duplicate_percent = (
-                (duplicate_percent * (iterations - 1)) + current_duplicate_percent
-            ) / iterations
+            duplicate_percent = round(
+                ((duplicate_percent * (iterations - 1)) + current_duplicate_percent)
+                / iterations,
+                1,
+            )
             print(
-                f"Duplicate percent: {duplicate_percent},"
+                f"Duplicate percent: {duplicate_percent}%, "
                 f"threads running: {threading.active_count()}"
             )
     time.sleep(10)

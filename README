@@ -1,5 +1,5 @@
-"Color Kanji" is an art project based on converting Word2Vec word embeddings to RGB, with several different projects:
+"Color Kanji" is an art project based on converting Word2Vec word embeddings to HSL, with several different subprojects:
 
-"Lennon Wall" is a project based around using LIHKG forum posts from 2019-2020 to create Word2Vec word embeddings for individual characters of popular Hong Kong slogans, then reduce the dimensionality to RGB to create colored squares for each character in the slogans similar to Hong Kong "Lennon Walls".
+"Lennon Wall" is a project based around using a database from Cantonese Wikipedia to create Word2Vec word embeddings for individual characters of popular Hong Kong slogans, then reduce the dimensionality to HSL to create colored squares for each character in the slogans similar to Hong Kong "Lennon Walls".
 
-"Puzzle Book" uses the collected works of a particular author to make author-specific word embeddings, convert them to RGB, and then "translate" one of their books to Color Kanji. Could be used as a printed art book or a complex digital Natural Language Processing puzzle to solve by re-translating the text to plain English.
+WIP: "Puzzle Book" uses the collected works of a particular author to make author-specific word embeddings, convert them to HSL, and then "translate" one of their books to colored squares.
